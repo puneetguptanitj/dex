@@ -226,10 +226,7 @@ func (a *app) oauth2Config(scopes []string) *oauth2.Config {
 }
 
 func (a *app) handleLogin(w http.ResponseWriter, r *http.Request) {
-	var scopes []string
-	if extraScopes := r.FormValue("extra_scopes"); extraScopes != "" {
-		scopes = strings.Split(extraScopes, " ")
-	}
+	scopes := []string{"groups"}
 	var clients []string
 	if crossClients := r.FormValue("cross_client"); crossClients != "" {
 		clients = strings.Split(crossClients, " ")
