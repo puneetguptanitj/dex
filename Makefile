@@ -19,6 +19,15 @@ LD_FLAGS="-w -X $(REPO_PATH)/version.Version=$(VERSION)"
 
 build: bin/dex bin/example-app bin/grpc-client
 
+images: image/dex image/example-app
+
+image/dex:
+	docker build -f Dockerfile-dex -t puneetguptanitj/dex .
+	docker push puneetguptanitj/dex
+image/example-app:
+	docker build -f Dockerfile-app -t puneetguptanitj/dex-app .
+	docker push puneetguptanitj/dex-app
+
 bin/dex:
 	@go install -v -ldflags $(LD_FLAGS) $(REPO_PATH)/cmd/dex
 

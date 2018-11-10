@@ -1,0 +1,11 @@
+# FROM alpine:3.8
+ FROM ubuntu:16.04
+
+ RUN mkdir /dex 
+ COPY . /dex
+
+ EXPOSE 5555
+
+ WORKDIR /dex
+
+ CMD ["/dex/bin/example-app" ]

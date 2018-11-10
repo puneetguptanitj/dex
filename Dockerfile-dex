@@ -1,0 +1,8 @@
+ FROM ubuntu:16.04 
+
+ RUN mkdir /dex
+ COPY . /dex
+
+ EXPOSE 5556
+ WORKDIR /dex
+ CMD ["/dex/bin/dex" , "serve", "/dex/examples/config-ldap.yaml"]
