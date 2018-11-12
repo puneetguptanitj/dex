@@ -97,6 +97,7 @@ type tokenTmplData struct {
 	RefreshToken string
 	RedirectURL  string
 	Claims       string
+	Kubeconfig   string
 }
 
 var tokenTmpl = template.Must(template.New("token.html").Parse(`<html>
@@ -137,23 +138,35 @@ pre {
     <h4><b>Claims</b></h4> 
     <p> Claims: <pre><code>{{ .Claims }}</code></pre></p>
   </div>
-</div>
+  </div>
+  <div class="card">
+  <div class="container">
+    <h4><b>Kubeconfig</b></h4> 
+    <p> Claims: <pre><code>{{ .Kubeconfig }}</code></pre></p>
+  </div>
+  </div>
   </body>
 </html>
 `))
 
+type MyClaims struct {
+	Groups []string `json:"groups,omitempty"`
+	Name   string   `json:"name"`
+}
+
 func renderToken(w http.ResponseWriter, redirectURL, idToken, refreshToken string, claims []byte) {
-	claimsMap := make(map[string]interface{})
+	claimsMap := MyClaims{}
 	err := json.Unmarshal(claims, &claimsMap)
 	if err != nil {
 		log.Printf("\n Failed to unmarshal claims object: %v", err)
 	}
-	claimsMap["kubeconfig"] = kubeclient.PrintCSRs(claimsMap["name"].(string), claimsMap["groups"].([]string))
+	kubeconfig := kubeclient.PrintCSRs(claimsMap.Name, claimsMap.Groups)
 	renderTemplate(w, tokenTmpl, tokenTmplData{
 		IDToken:      idToken,
 		RefreshToken: refreshToken,
 		RedirectURL:  redirectURL,
 		Claims:       string(claims),
+		Kubeconfig:   kubeconfig,
 	})
 }
 
