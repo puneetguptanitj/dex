@@ -59,7 +59,8 @@ func serve(cmd *cobra.Command, args []string) error {
 	}
 
 	var c Config
-	if err := yaml.Unmarshal(configData, &c); err != nil {
+	data := []byte(os.ExpandEnv(string(configData)))
+	if err := yaml.Unmarshal(data, &c); err != nil {
 		return fmt.Errorf("error parse config file %s: %v", configFile, err)
 	}
 
