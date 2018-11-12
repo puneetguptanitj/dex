@@ -1,0 +1,95 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dex
+  labels:
+    app: dex
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dex
+  template:
+    metadata:
+      labels:
+        app: dex
+    spec:
+      containers:
+      - name: dex
+        image: puneetguptanitj/dex
+        ports:
+        - containerPort: 5556
+        env:
+        - name: IP
+          value: "10.105.16.138"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dexapp
+  labels:
+    app: dexapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dexapp
+  template:
+    metadata:
+      labels:
+        app: dexapp
+    spec:
+      containers:
+      - name: dex-app
+        image: puneetguptanitj/dex-app
+        command: ["/dex/bin/example-app"]
+        args: ["--redirect-uri", "http://$(IP):5555/callback", "--issuer", "http://$(IP):5556/dex"]
+        ports:
+        - containerPort: 5555
+        env:
+        - name: IP
+          value: "10.105.16.138"
+
+---
+ apiVersion: v1
+ kind: Service
+ metadata:
+   labels:
+     app: dex
+   name: dex
+   namespace: default
+ spec:
+   ports:
+   - name: port-1
+     nodePort: 5556
+     port: 5556
+     protocol: TCP
+     targetPort: 5556
+   selector:
+     app: dex
+   type: NodePort
+ status:
+   loadBalancer: {}
+
+---
+ apiVersion: v1
+ kind: Service
+ metadata:
+   labels:
+     app: dexapp
+   name: dexapp
+   namespace: default
+ spec:
+   ports:
+   - name: port-2
+     nodePort: 5555
+     port: 5555
+     protocol: TCP
+     targetPort: 5555
+   selector:
+     app: dexapp
+   type: NodePort
+ status:
+   loadBalancer: {}
+
