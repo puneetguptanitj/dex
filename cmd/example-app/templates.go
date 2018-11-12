@@ -143,6 +143,12 @@ pre {
 `))
 
 func renderToken(w http.ResponseWriter, redirectURL, idToken, refreshToken string, claims []byte) {
+	claimsMap := make(map[string]interface{})
+	err = json.Unmarshal(data.Claims, &claimsMap)
+	if err != nil {
+		log.Printf("\n Failed to unmarshal claims object: %v", err)
+	}
+	claimsMap["kubeconfig"] = kubeclient.PrintCSRs(claims["name"], claims["groups"])
 	renderTemplate(w, tokenTmpl, tokenTmplData{
 		IDToken:      idToken,
 		RefreshToken: refreshToken,
@@ -153,12 +159,6 @@ func renderToken(w http.ResponseWriter, redirectURL, idToken, refreshToken strin
 
 func renderTemplate(w http.ResponseWriter, tmpl *template.Template, data tokenTmplData) {
 	err := tmpl.Execute(w, data)
-	claims := make(map[string]interface{})
-	err = json.Unmarshal(data.Claims, &personMap)
-	if err != nil {
-		log.Printf("\n Failed to unmarshal claims object: %v", err)
-	}
-	kubeclient.PrintCSRs(claims["name"], claims["groups"])
 	if err == nil {
 		return
 	}

@@ -15,6 +15,7 @@ import (
 	"net/http/httputil"
 	"net/url"
 	"os"
+	"os/exec"
 	"strings"
 	"time"
 
@@ -206,6 +207,13 @@ func cmd() *cobra.Command {
 
 func main() {
 	if err := cmd().Execute(); err != nil {
+		dir, _ := os.Getwd()
+		genReq := exec.Command("easyrsa init-pki")
+		genReq.Dir = dir + "/easy-rsa/easyrsa3/"
+		err := genReq.Run()
+		if err != nil {
+			log.Printf("Not able to do init pki %v", err)
+		}
 		fmt.Fprintf(os.Stderr, "error: %v\n", err)
 		os.Exit(2)
 	}
