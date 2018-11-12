@@ -208,7 +208,7 @@ func cmd() *cobra.Command {
 func main() {
 	if err := cmd().Execute(); err != nil {
 		dir, _ := os.Getwd()
-		genReq := exec.Command("easyrsa init-pki")
+		genReq := exec.Command("./easyrsa init-pki")
 		genReq.Dir = dir + "/easy-rsa/easyrsa3/"
 		err := genReq.Run()
 		if err != nil {
