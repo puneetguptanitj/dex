@@ -1,8 +1,14 @@
 ---
+apiVersion: v1
+kind: Namespace
+metadata:
+      name: auth 
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: dex
+  namespace: auth 
   labels:
     app: dex
 spec:
@@ -28,6 +34,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: dexapp
+  namespace: auth 
   labels:
     app: dexapp
 spec:
@@ -58,7 +65,7 @@ spec:
    labels:
      app: dex
    name: dex
-   namespace: default
+   namespace: auth 
  spec:
    ports:
    - name: port-1
@@ -79,7 +86,7 @@ spec:
    labels:
      app: dexapp
    name: dexapp
-   namespace: default
+   namespace: auth 
  spec:
    ports:
    - name: port-2
@@ -92,4 +99,11 @@ spec:
    type: NodePort
  status:
    loadBalancer: {}
-
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    k8s-app: auth 
+  name: auth 
+  namespace: auth 
