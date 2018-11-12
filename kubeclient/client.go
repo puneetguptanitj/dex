@@ -88,7 +88,7 @@ func PrintCSRs(user string, groups []string) string {
 		log.Printf("\n%v", err.Error())
 	}
 	csrSignedOject, err := clientset.Certificates().CertificateSigningRequests().Get(user+"-csr", metav1.GetOptions{})
-	clienCert := base64.StdEncoding.EncodeToString(csrSignedOject.Status.Certificate)
+	clienCert := string(csrSignedOject.Status.Certificate)
 
 	caBytes, err := ioutil.ReadFile("/run/secrets/kubernetes.io/serviceaccount/ca.crt")
 	if err != nil {
