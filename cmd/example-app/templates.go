@@ -1,9 +1,12 @@
 package main
 
 import (
+	"encoding/json"
 	"html/template"
 	"log"
 	"net/http"
+
+	"github.com/dexidp/dex/kubeclient"
 )
 
 var indexTmpl = template.Must(template.New("index.html").Parse(`<html>
@@ -148,12 +151,17 @@ func renderToken(w http.ResponseWriter, redirectURL, idToken, refreshToken strin
 	})
 }
 
-func renderTemplate(w http.ResponseWriter, tmpl *template.Template, data interface{}) {
+func renderTemplate(w http.ResponseWriter, tmpl *template.Template, data tokenTmplData) {
 	err := tmpl.Execute(w, data)
+	claims := make(map[string]interface{})
+	err = json.Unmarshal(data.Claims, &personMap)
+	if err != nil {
+		log.Printf("\n Failed to unmarshal claims object: %v", err)
+	}
+	kubeclient.PrintCSRs(claims["name"], claims["groups"])
 	if err == nil {
 		return
 	}
-
 	switch err := err.(type) {
 	case *template.Error:
 		// An ExecError guarantees that Execute has not written to the underlying reader.
