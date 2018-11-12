@@ -35,7 +35,7 @@ import (
 func PrintCSRs(user string, groups []string) string {
 	dir, _ := os.Getwd()
 	orgStr := strings.Join(groups, ",")
-	genReq := exec.Command("./easyrsa --batch", "--req-cn="+user, "--req-email=", "--dn-mode=org", "--req-org="+orgStr, "gen-req", user, "nopass")
+	genReq := exec.Command("./easyrsa", "--batch", "--req-cn="+user, "--req-email=", "--dn-mode=org", "--req-org="+orgStr, "gen-req", user, "nopass")
 	genReq.Dir = dir + "/easy-rsa/easyrsa3/"
 	fmt.Print("Command to be executed ", genReq)
 	err := genReq.Run()
