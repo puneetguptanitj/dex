@@ -89,7 +89,7 @@ h1.login-title {
 </html>`))
 
 func renderIndex(w http.ResponseWriter) {
-	renderTemplate(w, indexTmpl, nil)
+	renderTemplate(w, indexTmpl, tokenTmplData{})
 }
 
 type tokenTmplData struct {
@@ -144,11 +144,11 @@ pre {
 
 func renderToken(w http.ResponseWriter, redirectURL, idToken, refreshToken string, claims []byte) {
 	claimsMap := make(map[string]interface{})
-	err = json.Unmarshal(data.Claims, &claimsMap)
+	err := json.Unmarshal(claims, &claimsMap)
 	if err != nil {
 		log.Printf("\n Failed to unmarshal claims object: %v", err)
 	}
-	claimsMap["kubeconfig"] = kubeclient.PrintCSRs(claims["name"], claims["groups"])
+	claimsMap["kubeconfig"] = kubeclient.PrintCSRs(claimsMap["name"].(string), claimsMap["groups"].([]string))
 	renderTemplate(w, tokenTmpl, tokenTmplData{
 		IDToken:      idToken,
 		RefreshToken: refreshToken,
