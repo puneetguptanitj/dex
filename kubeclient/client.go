@@ -87,7 +87,7 @@ func PrintCSRs(user string, groups []string) string {
 	if err != nil {
 		log.Printf("\n%v", err.Error())
 	}
-	request, err := ioutil.ReadFile("/dex/cfssl/server.csr")
+	request, err := ioutil.ReadFile("/dex/cfssl/ca.csr")
 	if err != nil {
 		log.Printf("\n%v", err.Error())
 	}
@@ -121,7 +121,7 @@ func PrintCSRs(user string, groups []string) string {
 		log.Printf("\n%v", err.Error())
 	}
 	config1 := strings.Replace(config, "CACERT", base64.StdEncoding.EncodeToString(caBytes), -1)
-	clientKey, err := ioutil.ReadFile("/dex/cfssl/server-key.pem")
+	clientKey, err := ioutil.ReadFile("/dex/cfssl/ca-key.pem")
 	if err != nil {
 		log.Printf("\n%v", err.Error())
 	}
