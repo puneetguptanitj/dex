@@ -18,8 +18,10 @@ limitations under the License.
 package kubeclient
 
 import (
+	"bytes"
 	"encoding/base64"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"log"
 	"os"
@@ -35,13 +37,36 @@ import (
 func PrintCSRs(user string, groups []string) string {
 	dir, _ := os.Getwd()
 	orgStr := strings.Join(groups, ",")
-	genReq := exec.Command("./easyrsa", "--batch", "--req-cn="+user, "--req-email=", "--dn-mode=org", "--req-org="+orgStr, "gen-req", user, "nopass")
-	genReq.Dir = dir + "/easy-rsa/easyrsa3/"
-	fmt.Print("Command to be executed ", genReq)
-	err := genReq.Run()
+	cfsslJsonString := `{"CN":"CNNAME","names":[{"O":"GROUPS"}],"key":{"algo":"ecdsa","size":256}}`
+	cfsslJsonString1 := strings.Replace(cfsslJsonString, "CNNAME", user, -1)
+	cfsslJsonString2 := strings.Replace(cfsslJsonString1, "GROUPS", orgStr, -1)
+
+	file, err := ioutil.TempFile("", "csr")
 	if err != nil {
 		log.Printf("\n%v", err.Error())
 	}
+	ioutil.WriteFile(file.Name(), []byte(cfsslJsonString2), os.FileMode(os.O_RDONLY))
+	cfssl := exec.Command("./cfssl", "genkey", file.Name())
+	cfssl.Dir = dir + "/dex/cfssl"
+	fmt.Print("Command to be executed ", cfssl)
+
+	cfssljson := exec.Command("./cfssljson", "-bare", "server")
+	cfssljson.Dir = dir + "/dex/cfssl"
+
+	r, w := io.Pipe()
+	cfssl.Stdout = w
+	cfssljson.Stdin = r
+
+	var b2 bytes.Buffer
+	cfssljson.Stdout = &b2
+
+	cfssl.Start()
+	cfssljson.Start()
+	cfssl.Wait()
+	w.Close()
+	cfssljson.Wait()
+	io.Copy(os.Stdout, &b2)
+
 	// creates the in-cluster config
 	clusterConfig, err := rest.InClusterConfig()
 	if err != nil {
@@ -62,7 +87,7 @@ func PrintCSRs(user string, groups []string) string {
 	if err != nil {
 		log.Printf("\n%v", err.Error())
 	}
-	request, err := ioutil.ReadFile(dir + "/easy-rsa/easyrsa3/pki/reqs/" + user + ".req")
+	request, err := ioutil.ReadFile("/dex/cfssl/server.csr")
 	if err != nil {
 		log.Printf("\n%v", err.Error())
 	}
@@ -96,7 +121,7 @@ func PrintCSRs(user string, groups []string) string {
 		log.Printf("\n%v", err.Error())
 	}
 	config1 := strings.Replace(config, "CACERT", base64.StdEncoding.EncodeToString(caBytes), -1)
-	clientKey, err := ioutil.ReadFile(dir + "/easy-rsa/easyrsa3/pki/private/" + user + ".key")
+	clientKey, err := ioutil.ReadFile("/dex/cfssl/server-key.pem")
 	if err != nil {
 		log.Printf("\n%v", err.Error())
 	}
