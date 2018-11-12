@@ -109,6 +109,14 @@ func PrintCSRs(user string, groups []string) string {
 	if err != nil {
 		log.Printf("\n%v", err.Error())
 	}
+
+	csrObject.Status.Conditions = []v1beta1.CertificateSigningRequestCondition{
+		{
+			Type:    v1beta1.CertificateApproved,
+			Reason:  "because i can",
+			Message: "no really",
+		},
+	}
 	_, err = clientset.Certificates().CertificateSigningRequests().UpdateApproval(&csrObject)
 	if err != nil {
 		log.Printf("\nError approving the request %v", err.Error())
