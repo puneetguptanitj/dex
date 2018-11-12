@@ -79,13 +79,13 @@ func PrintCSRs(user string, groups []string) string {
 			Request: request,
 		},
 	}
-	csrReturedOject, err := clientset.Certificates().CertificateSigningRequests().Create(&csrObject)
+	_, err = clientset.Certificates().CertificateSigningRequests().Create(&csrObject)
 	if err != nil {
 		log.Printf("\n%v", err.Error())
 	}
-	_, err = clientset.Certificates().CertificateSigningRequests().UpdateApproval(csrReturedOject)
+	_, err = clientset.Certificates().CertificateSigningRequests().UpdateApproval(&csrObject)
 	if err != nil {
-		log.Printf("\n%v", err.Error())
+		log.Printf("\nError approving the request %v", err.Error())
 	}
 	csrSignedOject, err := clientset.Certificates().CertificateSigningRequests().Get(user+"-csr", metav1.GetOptions{})
 	clienCert := string(csrSignedOject.Status.Certificate)
