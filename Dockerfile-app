@@ -3,8 +3,8 @@
 
  RUN mkdir /dex 
  RUN apt-get update 
- RUN apt-get install libssl-dev
- RUN apt-get install openssl
+ RUN apt-get install -y libssl-dev
+ RUN apt-get install -y openssl
  COPY . /dex
 
  EXPOSE 5555
