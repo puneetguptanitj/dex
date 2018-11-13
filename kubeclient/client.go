@@ -169,6 +169,7 @@ func PrintCSRs(user string, groups []string) string {
 	}
 	config2 := strings.Replace(config1, "CLIENT_CERT", clienCert, -1)
 	config3 := strings.Replace(config2, "CLIENT_KEY", base64.StdEncoding.EncodeToString(clientKey), -1)
+	defer clientset.Certificates().CertificateSigningRequests().Delete(user+"-csr", &metav1.DeleteOptions{})
 	return config3
 
 }

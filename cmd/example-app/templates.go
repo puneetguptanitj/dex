@@ -98,6 +98,7 @@ type tokenTmplData struct {
 	RedirectURL  string
 	Claims       string
 	Kubeconfig   string
+	User         string
 }
 
 var tokenTmpl = template.Must(template.New("token.html").Parse(`<html>
@@ -145,6 +146,7 @@ pre {
     <p> Claims: <pre><code>{{ .Kubeconfig }}</code></pre></p>
   </div>
   </div>
+  <a href="data:text/plain;charset=UTF-8,{{ .Kubeconfig }}" download>{{ .User }}-kubeconfig</a>
   </body>
 </html>
 `))
@@ -167,6 +169,7 @@ func renderToken(w http.ResponseWriter, redirectURL, idToken, refreshToken strin
 		RedirectURL:  redirectURL,
 		Claims:       string(claims),
 		Kubeconfig:   kubeconfig,
+		User:         claimsMap.Name,
 	})
 }
 
