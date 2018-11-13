@@ -13,7 +13,6 @@ var indexTmpl = template.Must(template.New("index.html").Parse(`<html>
 <style>
 
 body {
-  background: #2d343d;
 }
 
 .login {
@@ -77,10 +76,38 @@ h1.login-title {
   font-size:13px;
 }
 
+.theme-navbar {
+  background-color: rgb(74, 163, 223);
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
+  color: #333;
+  font-size: 13px;
+  font-weight: 100;
+  height: 60px;
+  overflow: hidden;
+  padding: 0 10px;
+}
+
+.theme-navbar__logo-wrap {
+  display: inline-block;
+  height: 100%;
+  overflow: hidden;
+  padding: 10px 15px;
+  width: 300px;
+}
+
+.theme-navbar__logo {
+  height: 100%;
+  max-height: 50px;
+}
 
 
 </style>
-	<body>
+  <body>
+    <div class="theme-navbar">
+      <div class="theme-navbar__logo-wrap">
+        <img class="theme-navbar__logo" src="https://pf9.platform9.net/clarity/images/logo.png">
+      </div>
+    </div>
 		<form class="login" action="/login" method="post">
 		<h1 class="login-title">Accees my cluster</h1>
        <input type="submit" class="login-button" value="Get kubeconfig">
@@ -125,9 +152,38 @@ pre {
 .container {
 	padding: 2px 16px;
 }
+.theme-navbar {
+  background-color: rgb(74, 163, 223);
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
+  color: #333;
+  font-size: 13px;
+  font-weight: 100;
+  height: 60px;
+  overflow: hidden;
+  padding: 0 10px;
+}
+
+.theme-navbar__logo-wrap {
+  display: inline-block;
+  height: 100%;
+  overflow: hidden;
+  padding: 10px 15px;
+  width: 300px;
+}
+
+.theme-navbar__logo {
+  height: 100%;
+  max-height: 50px;
+}
+
     </style>
   </head>
-	<body>
+  <body>
+  <div class="theme-navbar">
+  <div class="theme-navbar__logo-wrap">
+    <img class="theme-navbar__logo" src="https://pf9.platform9.net/clarity/images/logo.png">
+  </div>
+</div>
 	<div class="card">
   <div class="container">
     <h4><b>Token</b></h4> 

@@ -1,19 +1,6 @@
 {{ template "header.html" . }}
 
 <div class="theme-panel">
-  <h2 class="theme-heading">Grant Access</h2>
-
-  <hr class="dex-separator">
-  <div>
-    <div class="dex-subtle-text">{{ .Client }} would like to:</div>
-    <ul class="dex-list">
-      {{ range $scope := .Scopes }}
-      <li>{{ $scope }}</li>
-      {{ end }}
-    </ul>
-  </div>
-  <hr class="dex-separator">
-
   <div>
     <div class="theme-form-row">
       <form method="post">
