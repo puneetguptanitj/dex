@@ -146,7 +146,7 @@ pre {
     <p> Claims: <pre><code>{{ .Kubeconfig }}</code></pre></p>
   </div>
   </div>
-  <a href="data:text/plain;charset=UTF-8,{{ .Kubeconfig }}" download={{ .User }}-kubeconfig>{{ .User }}-kubeconfig</a>
+  <a href="data:text/plain;charset=UTF-8,{{ .Kubeconfig }}" download="{{ .User }}-kubeconfig">{{ .User }}-kubeconfig</a>
   </body>
 </html>
 `))
