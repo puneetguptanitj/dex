@@ -27,6 +27,7 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+	"time"
 
 	v1beta1 "k8s.io/api/certificates/v1beta1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -123,6 +124,14 @@ func PrintCSRs(user string, groups []string) string {
 	}
 	csrSignedOject, err := clientset.Certificates().CertificateSigningRequests().Get(user+"-csr", metav1.GetOptions{})
 	clienCert := base64.StdEncoding.EncodeToString(csrSignedOject.Status.Certificate)
+	for i := 0; i < 5; i++ {
+		if len(clienCert) == 0 {
+			time.Sleep(5 * time.Second)
+		} else {
+			break
+		}
+		clienCert = base64.StdEncoding.EncodeToString(csrSignedOject.Status.Certificate)
+	}
 
 	caBytes, err := ioutil.ReadFile("/run/secrets/kubernetes.io/serviceaccount/ca.crt")
 	if err != nil {
