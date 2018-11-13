@@ -16,18 +16,18 @@ var _ = yaml.YAMLToJSON
 
 func TestUnmarshalConfig(t *testing.T) {
 	rawConfig := []byte(`
-issuer: http://127.0.0.1:5556/dex
+issuer: http://127.0.0.1:32000/dex
 storage:
   type: sqlite3
   config:
     file: examples/dex.db
 
 web:
-  http: 127.0.0.1:5556
+  http: 127.0.0.1:32000
 staticClients:
 - id: example-app
   redirectURIs:
-  - 'http://127.0.0.1:5555/callback'
+  - 'http://127.0.0.1:31000/callback'
   name: 'Example App'
   secret: ZXhhbXBsZS1hcHAtc2VjcmV0
 
@@ -42,7 +42,7 @@ connectors:
     issuer: https://accounts.google.com
     clientID: foo
     clientSecret: bar
-    redirectURI: http://127.0.0.1:5556/dex/callback/google
+    redirectURI: http://127.0.0.1:32000/dex/callback/google
 
 enablePasswordDB: true
 staticPasswords:
@@ -67,7 +67,7 @@ logger:
 `)
 
 	want := Config{
-		Issuer: "http://127.0.0.1:5556/dex",
+		Issuer: "http://127.0.0.1:32000/dex",
 		Storage: Storage{
 			Type: "sqlite3",
 			Config: &sql.SQLite3{
@@ -75,7 +75,7 @@ logger:
 			},
 		},
 		Web: Web{
-			HTTP: "127.0.0.1:5556",
+			HTTP: "127.0.0.1:32000",
 		},
 		StaticClients: []storage.Client{
 			{
@@ -83,7 +83,7 @@ logger:
 				Secret: "ZXhhbXBsZS1hcHAtc2VjcmV0",
 				Name:   "Example App",
 				RedirectURIs: []string{
-					"http://127.0.0.1:5555/callback",
+					"http://127.0.0.1:31000/callback",
 				},
 			},
 		},
@@ -102,7 +102,7 @@ logger:
 					Issuer:       "https://accounts.google.com",
 					ClientID:     "foo",
 					ClientSecret: "bar",
-					RedirectURI:  "http://127.0.0.1:5556/dex/callback/google",
+					RedirectURI:  "http://127.0.0.1:32000/dex/callback/google",
 				},
 			},
 		},

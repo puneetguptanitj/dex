@@ -1,10 +1,10 @@
-issuer: http://${IP}:5556/dex
+issuer: http://${IP}:32000/dex
 storage:
   type: sqlite3
   config:
     file: examples/dex.db
 web:
-  http: 0.0.0.0:5556
+  http: 0.0.0.0:32000
 
 connectors:
 - type: ldap
@@ -48,6 +48,6 @@ connectors:
 staticClients:
 - id: example-app
   redirectURIs:
-  - 'http://${IP}:5555/callback'
+  - 'http://${IP}:31000/callback'
   name: 'Example App'
   secret: ZXhhbXBsZS1hcHAtc2VjcmV0

@@ -18,7 +18,7 @@ spec:
 
         ports:
         - name: https
-          containerPort: 5556
+          containerPort: 32000
 
         volumeMounts:
         - name: config
@@ -60,7 +60,7 @@ data:
       config:
         inCluster: true
     web:
-      https: 0.0.0.0:5556
+      https: 0.0.0.0:32000
       tlsCert: /etc/dex/tls/tls.crt
       tlsKey: /etc/dex/tls/tls.key
     connectors:
@@ -78,7 +78,7 @@ data:
     staticClients:
     - id: example-app
       redirectURIs:
-      - 'http://127.0.0.1:5555/callback'
+      - 'http://127.0.0.1:31000/callback'
       name: 'Example App'
       secret: ZXhhbXBsZS1hcHAtc2VjcmV0
 
@@ -98,9 +98,9 @@ spec:
   type: NodePort
   ports:
   - name: dex
-    port: 5556
+    port: 32000
     protocol: TCP
-    targetPort: 5556
+    targetPort: 32000
     nodePort: 32000
   selector:
     app: dex

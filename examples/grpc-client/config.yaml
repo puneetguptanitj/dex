@@ -1,4 +1,4 @@
-issuer: http://127.0.0.1:5556/dex
+issuer: http://127.0.0.1:32000/dex
 
 storage:
   type: sqlite3
@@ -7,7 +7,7 @@ storage:
 
 # Configuration for the HTTP endpoints.
 web:
-  http: 0.0.0.0:5556
+  http: 0.0.0.0:32000
 
 grpc:
   addr: 127.0.0.1:5557
