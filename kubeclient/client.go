@@ -143,15 +143,19 @@ func PrintCSRs(user string, groups []string) string {
 	if err != nil {
 		log.Printf("\nError approving the request %v", err.Error())
 	}
-	csrSignedOject, err := clientset.Certificates().CertificateSigningRequests().Get(user+"-csr", metav1.GetOptions{})
-	clienCert := base64.StdEncoding.EncodeToString(csrSignedOject.Status.Certificate)
+	clienCert := ""
 	for i := 0; i < 5; i++ {
+		csrSignedOject, err := clientset.Certificates().CertificateSigningRequests().Get(user+"-csr", metav1.GetOptions{})
+		if err != nil {
+			log.Printf("\nError approving the request %v", err.Error())
+		}
+		clienCert = base64.StdEncoding.EncodeToString(csrSignedOject.Status.Certificate)
 		if len(clienCert) == 0 {
 			time.Sleep(5 * time.Second)
 		} else {
 			break
 		}
-		clienCert = base64.StdEncoding.EncodeToString(csrSignedOject.Status.Certificate)
+
 	}
 
 	caBytes, err := ioutil.ReadFile("/run/secrets/kubernetes.io/serviceaccount/ca.crt")
