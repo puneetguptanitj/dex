@@ -48,11 +48,11 @@ func PrintCSRs(user string, groups []string) string {
 	}
 	ioutil.WriteFile(file.Name(), []byte(cfsslJsonString2), os.FileMode(os.O_RDONLY))
 	cfssl := exec.Command("./cfssl", "genkey", file.Name())
-	cfssl.Dir = dir + "/dex/cfssl"
+	cfssl.Dir = dir + "/cfssl"
 	fmt.Print("Command to be executed ", cfssl)
 
 	cfssljson := exec.Command("./cfssljson", "-bare", "server")
-	cfssljson.Dir = dir + "/dex/cfssl"
+	cfssljson.Dir = dir + "/cfssl"
 
 	r, w := io.Pipe()
 	cfssl.Stdout = w
@@ -61,12 +61,30 @@ func PrintCSRs(user string, groups []string) string {
 	var b2 bytes.Buffer
 	cfssljson.Stdout = &b2
 
-	cfssl.Start()
-	cfssljson.Start()
-	cfssl.Wait()
-	w.Close()
-	cfssljson.Wait()
-	io.Copy(os.Stdout, &b2)
+	err = cfssl.Start()
+	if err != nil {
+		log.Printf("\n%v", err.Error())
+	}
+	err = cfssljson.Start()
+	if err != nil {
+		log.Printf("\n%v", err.Error())
+	}
+	err = cfssl.Wait()
+	if err != nil {
+		log.Printf("\n%v", err.Error())
+	}
+	err = w.Close()
+	if err != nil {
+		log.Printf("\n%v", err.Error())
+	}
+	err = cfssljson.Wait()
+	if err != nil {
+		log.Printf("\n%v", err.Error())
+	}
+	_, err = io.Copy(os.Stdout, &b2)
+	if err != nil {
+		log.Printf("\n%v", err.Error())
+	}
 
 	// creates the in-cluster config
 	clusterConfig, err := rest.InClusterConfig()
@@ -88,7 +106,10 @@ func PrintCSRs(user string, groups []string) string {
 	if err != nil {
 		log.Printf("\n%v", err.Error())
 	}
-	request, err := ioutil.ReadFile("/dex/cfssl/ca.csr")
+	request, err := ioutil.ReadFile("/dex/cfssl/server.csr")
+	clientKey, err := ioutil.ReadFile("/dex/cfssl/server-key.pem")
+	defer os.RemoveAll("/dex/cfssl/server.csr")
+	defer os.RemoveAll("/dex/cfssl/server-key.pem")
 	if err != nil {
 		log.Printf("\n%v", err.Error())
 	}
@@ -138,7 +159,7 @@ func PrintCSRs(user string, groups []string) string {
 		log.Printf("\n%v", err.Error())
 	}
 	config1 := strings.Replace(config, "CACERT", base64.StdEncoding.EncodeToString(caBytes), -1)
-	clientKey, err := ioutil.ReadFile("/dex/cfssl/ca-key.pem")
+
 	if err != nil {
 		log.Printf("\n%v", err.Error())
 	}
