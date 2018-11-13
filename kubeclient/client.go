@@ -151,7 +151,7 @@ func PrintCSRs(user string, groups []string) string {
 		}
 		clienCert = base64.StdEncoding.EncodeToString(csrSignedOject.Status.Certificate)
 		if len(clienCert) == 0 {
-			time.Sleep(5 * time.Second)
+			time.Sleep(2 * time.Second)
 		} else {
 			break
 		}
