@@ -60,7 +60,7 @@ spec:
         - name: IP
           value: "10.105.16.138"
         - name: API_ENDPOINT
-          value: "https: //10.105.16.158:6443"
+          value: "https://10.105.16.158:6443"
 
 ---
  apiVersion: v1
