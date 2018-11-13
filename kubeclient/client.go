@@ -97,7 +97,7 @@ func PrintCSRs(user string, groups []string) string {
 		log.Printf("\n%v", err.Error())
 	}
 	config := `{"apiVersion":"v1","clusters":[{"cluster":{"certificate-authority-data":"CACERT",
-	"server":"https://10.105.16.158:6443"},"name":"myK8sCluster"}],"contexts":
+	"server":"API_ENDPOINT"},"name":"myK8sCluster"}],"contexts":
 	[{"context":{"cluster":"myK8sCluster","user":"usera"},"name":"myK8sCluster"}],
 	"current-context":"myK8sCluster","kind":"Config","preferences":{},"users":
 	[{"name":"usera","user":{"client-certificate-data":"CLIENT_CERT","client-key-data":"CLIENT_KEY"}}]}`
@@ -169,7 +169,8 @@ func PrintCSRs(user string, groups []string) string {
 	}
 	config2 := strings.Replace(config1, "CLIENT_CERT", clienCert, -1)
 	config3 := strings.Replace(config2, "CLIENT_KEY", base64.StdEncoding.EncodeToString(clientKey), -1)
+	config4 := strings.Replace(config3, "API_ENDPOINT", os.Getenv("API_ENDPOINT"), -1)
 	defer clientset.Certificates().CertificateSigningRequests().Delete(user+"-csr", &metav1.DeleteOptions{})
-	return config3
+	return config4
 
 }
